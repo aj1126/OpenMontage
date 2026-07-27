@@ -56,6 +56,15 @@ service_account*.json
 # Stray media downloads (test/scratch clips left in repo root)
 pexels_video_*.mp4
 
+# Generated test/pipeline media (root-level — regenerable)
+test_*.mp4
+final_video.mp4
+test.wav
+
+# Temp script text dumps at repo root
+*.ps1.txt
+
+
 # Scratch/debug scripts
 scratch/
 
