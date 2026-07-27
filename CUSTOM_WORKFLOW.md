@@ -54,7 +54,9 @@ git push -u my-fork customizations
 
 ---
 
-## 3. AI Agent Context Snapshots
+## 4. Codebase Memory & Graph UI
 
-To create, restore, or manage AI session checkpoints and workspace state snapshots:
-* Run `/custom-resume-point` to snapshot compact conversation and workspace context states into `.workspace_context/`.
+* **MCP Server**: `codebase-memory-mcp` (UI variant v0.9.0 installed)
+* **Web UI Dashboard**: [http://localhost:9749](http://localhost:9749)
+* **Index Command**: Run `index_repository` via MCP or agent tools to refresh code graph nodes and edges.
+* **Architecture Record**: Stored in `manage_adr` within `codebase-memory-mcp`.

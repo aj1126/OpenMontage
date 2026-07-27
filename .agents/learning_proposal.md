@@ -94,3 +94,17 @@ Added 403 error username-inference note.
 Added recommended `.gitignore` block for media/tool-output projects to Setup section:
 `test_*.mp4`, `final_video.mp4`, `test.wav`, `*.ps1.txt`, `.serena/`, `out/`, `narration.wav`.
 Also added `my-fork` remote check to verification checklist.
+
+---
+
+## Session 3 — 2026-07-27 (Codebase Memory UI & Env Key Hygiene)
+
+### 1. `codebase-memory-mcp` UI Variant Installation Fix
+**Applied to**: `CUSTOM_WORKFLOW.md` & `scratch/install_cbm_ui.ps1`
+Bypassed `install.ps1` split-binary allowlist issue to extract the single-binary UI zip for Windows (`codebase-memory-mcp-ui-windows-amd64.zip`).
+Documented the Web UI dashboard endpoint (`http://localhost:9749`).
+
+### 2. Environment API Keys Hygiene
+**Applied to**: Workspace `.env` configuration
+Safely mapped user keys (`PEXELS_API_KEY`, `PIXABAY_API_KEY`, `XAI_API_KEY`) into `.env` without exposing them in committed files or repository diffs.
+
