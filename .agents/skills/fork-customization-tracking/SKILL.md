@@ -27,7 +27,22 @@ git commit -m "feat(customizations): initial local alterations"
 ```
 
 Update `.gitignore` to exclude generated/environment-specific files before
-committing (tool outputs, `.serena/`, `out/`, `narration.wav`, etc.).
+committing. Recommended patterns for media/tool-output projects:
+
+```gitignore
+# Generated test/pipeline media (root-level — regenerable)
+test_*.mp4
+final_video.mp4
+test.wav
+
+# Temp script text dumps at repo root
+*.ps1.txt
+
+# Tool environment dirs
+.serena/
+out/
+narration.wav
+```
 
 ---
 
@@ -54,7 +69,12 @@ git checkout customizations # your modified version
 
 ---
 
-## Remote Backup (Optional)
+## Remote Backup
+
+> ⚠️ **First-push always fails on a clone**: `git push` targets `origin`
+> (the upstream repo — read-only). Always use `git push -u my-fork <branch>`
+> for your customizations branch. Once set, future `git push` calls work
+> normally because the branch tracks `my-fork`.
 
 Push your custom branch to a personal GitHub fork:
 
@@ -62,15 +82,23 @@ Push your custom branch to a personal GitHub fork:
 # Add your personal GitHub repo as a remote (one-time)
 git remote add my-fork https://github.com/<your-username>/<repo-name>.git
 
-# Push and track
+# Push and set upstream tracking
 git push -u my-fork customizations
 ```
+
+If `git push` returns a 403 error like:
+```
+Permission to <org>/<repo> denied to <username>
+```
+Your `<username>` is visible in that error. Use it to construct the fork URL
+and add the remote as above.
 
 ---
 
 ## Verification Checklist
 
 - [ ] `customizations` branch exists (`git branch`)
+- [ ] `my-fork` remote is configured (`git remote -v`)
 - [ ] Working tree is clean before switching branches (`git status`)
 - [ ] `.gitignore` excludes all generated/env-specific files
 - [ ] Rebase completes without unresolved conflicts

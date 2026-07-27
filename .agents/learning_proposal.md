@@ -1,4 +1,4 @@
-# Learning Proposal — Session 2026-07-27
+# Learning Proposals — OpenMontage Session Log
 
 Generated from this session's interactions via `/learn` + `/code-review-optimization-learning`.
 
@@ -67,3 +67,30 @@ Already captured in `.agents/skills/text-to-speech/SKILL.md`.
 | Created | `.agents/learning_proposal.md` (this file) |
 | Created | `.agents/skills/fork-customization-tracking/SKILL.md` |
 | Updated | Global `code-review-optimization-learning` SKILL.md |
+
+---
+
+## Session 2 — 2026-07-27 (Git Push / Fork Workflow)
+
+### 1. Fork Push: 403 → Infer Username from Error
+**Applied to**: Global `git-check-commit-push` SKILL.md
+When `git push` returns `Permission to <org>/<repo> denied to <username>`,
+extract `<username>` from the error, construct `https://github.com/<username>/<repo>.git`,
+add as `my-fork` remote, and retry with `git push -u my-fork <branch>`.
+
+### 2. `git-check-commit-push` Fork Push Gap
+**Applied to**: Global `git-check-commit-push` SKILL.md
+Added 403 fallback steps after step 5, fork-clone awareness constraint,
+and expanded large file safeguard patterns (`test_*.mp4`, `final_video.mp4`, `*.wav`, `*.ps1.txt`).
+
+### 3. `fork-customization-tracking` First-Push Warning
+**Applied to**: `.agents/skills/fork-customization-tracking/SKILL.md`
+Added ⚠️ warning that `git push` always fails on a clone (origin = upstream/read-only).
+Documented that `git push -u my-fork <branch>` is the correct first-push command.
+Added 403 error username-inference note.
+
+### 4. Generated Media `.gitignore` Patterns
+**Applied to**: `.agents/skills/fork-customization-tracking/SKILL.md`
+Added recommended `.gitignore` block for media/tool-output projects to Setup section:
+`test_*.mp4`, `final_video.mp4`, `test.wav`, `*.ps1.txt`, `.serena/`, `out/`, `narration.wav`.
+Also added `my-fork` remote check to verification checklist.
