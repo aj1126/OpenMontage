@@ -383,3 +383,26 @@ rushed, or ignores the intended breaks.
 4. **Preview voices** using the `preview_audio_url` before generating (may be null for some voices)
 5. **Use `word_timestamps`** in the response for caption syncing or timed text overlays
 6. **Use SSML break tags** in your text for pauses: `word <break time="1s"/> word`
+
+## Offline & Local TTS Tools (Piper TTS)
+
+When using offline text-to-speech providers such as Piper (`PiperTTS`):
+
+### 1. Dual Binary/Module Tool Resolver
+Local Python tools may be installed as standalone binaries or CLI modules inside virtual environments. Tool implementations should implement a dual lookup strategy:
+```python
+def _get_piper_cmd(self) -> list[str] | None:
+    if shutil.which("piper"):
+        return ["piper"]
+    if importlib.util.find_spec("piper") is not None:
+        return [sys.executable, "-m", "piper"]
+    return None
+```
+
+### 2. Tool CLI Invocation Invariant
+When running or testing tool CLI entrypoints directly, always execute via module mode:
+```bash
+python -m tools.audio.piper_tts --text "Hello world" --output narration.wav
+```
+This ensures Python includes the project root in `sys.path`, preventing `ModuleNotFoundError` when importing `from tools.base_tool import ...`.
+

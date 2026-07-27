@@ -85,17 +85,18 @@ This step typically costs $0.03–0.08 total and prevents $1–3 of wasted gener
 
 For each script section:
 1. Extract the narration text
-2. Read `script.voice_performance` and section `delivery_cues`
+2. Read `script.voice_performance`
 3. Use `delivery_cues.provider_text` when present; otherwise transform the section text with purposeful punctuation and break tags only when the selected provider supports them
-4. Apply speaker directions from the script (pace, emphasis, emotion)
-5. Apply the playbook's `audio.voice_style`
-6. Map cues to provider parameters:
+4. **Text Sanitization for ElevenLabs TTS**: Replace all Unicode em-dashes (`—`) with commas or sentence breaks before sending text to ElevenLabs. ElevenLabs TTS models frequently vocalise `—` as unwanted filler sounds ("owa").
+5. Apply speaker directions from the script (pace, emphasis, emotion)
+6. Apply the playbook's `audio.voice_style`
+7. Map cues to provider parameters:
    - OpenAI: `instructions` only with `model: "gpt-4o-mini-tts"`; use `response_format` for output format
    - Google TTS: `input_type: "ssml"` when using `<break>` tags, plus `speaking_rate` in `0.25..2.0` and `pitch` in `-20..20`
    - ElevenLabs: `stability`, `similarity_boost`, `style`, `speed`, and `use_speaker_boost`
-7. Generate using `tts_selector` — it auto-routes to the best available TTS provider based on user preference and availability. Check the registry's `best_for` fields to understand each provider's strengths.
-8. Record the applied `voice_performance` metadata on each narration asset
-9. Verify the audio file exists and duration matches expected timing (±15%)
+8. Generate using `tts_selector` — it auto-routes to the best available TTS provider based on user preference and availability. Check the registry's `best_for` fields to understand each provider's strengths.
+9. Record the applied `voice_performance` metadata on each narration asset
+10. Verify the audio file exists and duration matches expected timing (±15%)
 
 **Pronunciation guide**: If the script contains technical terms, jargon, or names with non-obvious pronunciation, include a pronunciation map in the TTS request.
 
@@ -106,6 +107,9 @@ or ignores intended pauses, do not batch the remaining sections. Revise the
 ### Step 4: Generate Visual Assets
 
 Process asset tasks grouped by tool for efficiency:
+
+**Fallback Image Sourcing (Zero-Key / Free Path)**:
+When AI image generation tools are unavailable or offline, search public domain APIs (NASA Image & Video Library `images-api.nasa.gov`, Wikimedia Commons) to fetch topic-relevant high-resolution space/science photography. Do not fall back to plain dark UI cards without visual image backgrounds.
 
 **Images (`image_selector`)**:
 1. Build the prompt from the scene's actual purpose:

@@ -174,9 +174,11 @@ Call the `video_compose` tool with:
 ```
 
 If using Remotion for animated segments:
-1. Generate Remotion composition data from edit decisions
-2. Call `video_compose` with `operation: "remotion_render"` for animated segments
-3. Assemble Remotion outputs with remaining segments via FFmpeg
+1. Copy image assets to `remotion-composer/public/assets/images/` prior to rendering so localhost:3000 can resolve them cleanly.
+2. Generate Remotion composition data from edit decisions
+3. Call `video_compose` with `operation: "remotion_render"` for animated segments
+4. Assemble Remotion outputs with remaining segments via FFmpeg
+5. **Post-render audio stream muxing**: After `remotion_render` completes, verify audio levels. If the output audio stream is silent (-91 dB), execute an explicit FFmpeg muxing pass: `ffmpeg -i rendered.mp4 -i mixed_audio.mp3 -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -shortest final_output.mp4`
 
 **Zero-key Remotion render (component-only videos):**
 When all scenes are Remotion component types (hero_title, stat_card, bar_chart, line_chart,
@@ -187,8 +189,7 @@ for the proven formula — especially the all-dark-background rule for visual co
 
 ### Step 5: Audio Post-Processing
 
-**Remotion path (DEFAULT):** Skip external audio mixing entirely. Remotion handles all audio
-natively via `<Audio>` components. Pass audio sources in the composition props:
+**Remotion path (DEFAULT):** Skip external audio mixing entirely if staged in React tree. Otherwise, perform a full_mix via `audio_mixer` and mux via FFmpeg post-render.
 ```json
 {
   "audio": {

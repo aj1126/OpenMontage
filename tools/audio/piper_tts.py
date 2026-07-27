@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import importlib.util
 import shutil
 import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -95,8 +97,15 @@ class PiperTTS(BaseTool):
     side_effects = ["writes audio file to output_path"]
     user_visible_verification = ["Listen to generated audio for intelligibility"]
 
-    def get_status(self) -> ToolStatus:
+    def _get_piper_cmd(self) -> list[str] | None:
         if shutil.which("piper"):
+            return ["piper"]
+        if importlib.util.find_spec("piper") is not None:
+            return [sys.executable, "-m", "piper"]
+        return None
+
+    def get_status(self) -> ToolStatus:
+        if self._get_piper_cmd() is not None:
             return ToolStatus.AVAILABLE
         return ToolStatus.UNAVAILABLE
 
@@ -120,9 +129,9 @@ class PiperTTS(BaseTool):
         output_path = Path(inputs.get("output_path", "tts_output.wav"))
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
+        cmd = self._get_piper_cmd() or ["piper"]
         proc = subprocess.run(
-            [
-                "piper",
+            cmd + [
                 "--model", inputs.get("model", "en_US-lessac-medium"),
                 "--speaker", str(inputs.get("speaker_id", 0)),
                 "--length-scale", str(inputs.get("length_scale", 1.0)),
@@ -153,3 +162,17 @@ class PiperTTS(BaseTool):
             artifacts=[str(output_path)],
             model=inputs.get("model", "en_US-lessac-medium"),
         )
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Run Piper TTS tool directly")
+    parser.add_argument("--text", required=True, help="Text to synthesize")
+    parser.add_argument("--output", default="narration.wav", help="Output WAV path")
+    parser.add_argument("--model", default="en_US-lessac-medium", help="Piper voice model name")
+    args = parser.parse_args()
+
+    tool = PiperTTS()
+    res = tool.execute({"text": args.text, "output_path": args.output, "model": args.model})
+    print(res)
+

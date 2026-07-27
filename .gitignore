@@ -19,6 +19,10 @@ htmlcov/
 .trae/
 .idea/
 .vscode/
+.serena/
+narration.wav
+out/
+
 
 # Pipeline outputs (regenerable — never commit large media)
 output/
